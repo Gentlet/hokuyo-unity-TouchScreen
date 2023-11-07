@@ -327,38 +327,54 @@ public class URGSample : MonoBehaviour {
 
 	private bool gd_loop = false;
 
-	// PP
-//	MODL ... センサ型式情報
-//	DMIN ... 最小計測可能距離 (mm)
-//	DMAX ... 最大計測可能距離 (mm)
-//	ARES ... 角度分解能(360度の分割数)
-//	AMIN ... 最小計測可能方向値
-//	AMAX ... 最大計測可能方向値
-//	AFRT ... 正面方向値
-//	SCAN ... 標準操作角速度
+    //	운전모드 설정
+    //		"SCIP 2.0"...SCIP2.0 모드 변경
+    //		"TM0", "TM1", "TM2"...타임스탬프 모드
+    //		"SS"...보레이트 변경
+    //		"BM"...레이저의 방사.
+    //		"QT"...레이저를 끄면 측정이 정지됩니다.
+    //		"RS"...파라미터를 재설정합니다. 측정이 일시 중단됩니다.
+    //		"CR"...모터의 회전 속도를 변경합니다.
+    //	상태 정보 가져오기
+    //		"VV"...버전 정보 획득.
+    //		"PP"...파라미터 정보의 획득.
+    //		"II"...신분 취득.
+    //	거리 데이터 수신
+    //		"GD", "GS"...거리 데이터를 한 번에 하나씩 획득합니다.
+    //		"MD", "MS"...거리 데이터를 연속적으로 획득합니다.
 
-	void OnGUI()
+    // PP
+    //	MODL ... 센서 형식 정보
+    //	DMIN ... 최소 계측 가능 거리 (mm)
+    //	DMAX ... 최대 계측 가능 거리 (mm)
+    //	ARES ... 각도 분해능(360도 분할수)
+    //	AMIN ... 최소 계측 가능 방향값
+    //	AMAX ... 최대 계측 가능 방향값
+    //	AFRT ... 정면 방향값
+    //	SCAN ... 표준 조작각속도
+
+    void OnGUI()
 	{
 		// https://sourceforge.net/p/urgnetwork/wiki/scip_jp/
-		if(GUILayout.Button("VV: (バージョン情報の取得)")){
+		if(GUILayout.Button("VV: (버전 정보 취득)")){
 			urg.Write(SCIP_library.SCIP_Writer.VV());
 		}
 //		if(GUILayout.Button("SCIP2")){
 //			urg.Write(SCIP_library.SCIP_Writer.SCIP2());
 //		}
-		if(GUILayout.Button("PP: (パラメータ情報の取得)")){
+		if(GUILayout.Button("PP: (파라미터 정보의 취득)")){
 			urg.Write(SCIP_library.SCIP_Writer.PP());
 		}
-		if(GUILayout.Button("MD: (計測＆送信要求)")){
+		if(GUILayout.Button("MD: (계측&송신 요구)")){
 			urg.Write(SCIP_library.SCIP_Writer.MD(0, 1080, 1, 0, 0));
 		}
-		if(GUILayout.Button("ME: (計測＆距離データ・受光強度値送信要求)")){
+		if(GUILayout.Button("ME: (계측&거리 데이터·수광 강도값 송신 요구)")){
 			urg.Write(SCIP_library.SCIP_Writer.ME(0, 1080, 1, 1, 0));
 		}
-		if(GUILayout.Button("BM: (レーザの発光)")){
+		if(GUILayout.Button("BM: (레이저 발광)")){
 			urg.Write(SCIP_library.SCIP_Writer.BM());
 		}
-		if(GUILayout.Button("GD: (計測済み距離データ送信要求)")){
+		if(GUILayout.Button("GD: (계측된 거리 데이터 전송 요구)")){
 			urg.Write(SCIP_library.SCIP_Writer.GD(0, 1080));
 		}
 		if(GUILayout.Button("GD_loop")){

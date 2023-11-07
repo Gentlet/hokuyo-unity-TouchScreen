@@ -38,3 +38,17 @@ The following packages were 추가됨:
   com.unity.modules.xr@1.0.0
 The following packages were 업데이트됨:
   com.unity.collab-proxy 2.0.0 버전에서 2.1.0버전으로  com.unity.feature.2d 1.0.0 버전에서 2.0.0버전으로  com.unity.ide.rider 3.0.18 버전에서 3.0.25버전으로  com.unity.ide.visualstudio 2.0.17 버전에서 2.0.21버전으로  com.unity.timeline 1.7.3 버전에서 1.7.5버전으로  com.unity.visualscripting 1.8.0 버전에서 1.9.1버전으로
+=== Fri Nov  3 19:14:05 2023
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were 추가됨:
+  com.unity.2d.sprite@1.0.0
+  com.unity.2d.tilemap@1.0.0
+  com.unity.ads@4.4.2
+  com.unity.analytics@3.8.1
+  com.unity.ide.vscode@1.2.5
+  com.unity.purchasing@4.9.3
+  com.unity.xr.legacyinputhelpers@2.1.10
+  com.unity.ai.navigation@1.1.5

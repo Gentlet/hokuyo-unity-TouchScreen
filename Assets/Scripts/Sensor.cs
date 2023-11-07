@@ -28,32 +28,28 @@ public class Sensor : MonoBehaviour
     List<DetectObject> detectObjects;
     List<int> detectIdList;
 
-    private Vector3[] directions;
-    private bool cached = false;
 
     UrgDeviceEthernet urg;
     public int sensorScanSteps { get; private set; }
     public float scale = 0.1f;
-    public float limit = 300.0f;//mm
-    public int noiseLimit = 5;
 
     public Color distanceColor = Color.white;
-    //	public Color detectColor = Color.white;
-    public Color strengthColor = Color.white;
 
     public Color[] groupColors;
 
     List<long> distances;
-    List<long> strengths;
 
+    private Vector3[] directions;
     long[] distanceConstrainList;
+
+    
+    public Vector2 resolution;
 
     public Vector2 pivot;
     public Rect areaRect;
 
     public bool debugDraw = false;
 
-    int drawCount;
 
 
     void CalculateDistanceConstrainList(int steps)
@@ -100,7 +96,6 @@ public class Sensor : MonoBehaviour
 
         }
     }
-
     List<long> ConstrainDetectionArea(List<long> beforeCrop)
     {
         List<long> result = new List<long>();
@@ -135,7 +130,6 @@ public class Sensor : MonoBehaviour
     void Start()
     {
         distances = new List<long>();
-        strengths = new List<long>();
 
         detectObjects = new List<DetectObject>();
 
@@ -176,13 +170,11 @@ public class Sensor : MonoBehaviour
             {
                 distances.Clear();
                 distances.AddRange(ConstrainDetectionArea(urg.distances));
-                //distances.AddRange(urg.distances);
             }
         }
         catch
         {
         }
-        //		List<long> distances = urg.distances;
 
         if (debugDraw)
         {
@@ -192,80 +184,9 @@ public class Sensor : MonoBehaviour
                 long dist = distances[i];
                 Debug.DrawRay(Vector3.zero, dist * dir * scale, distanceColor);
             }
+
+            DrawRect(detectAreaRect, Color.green);
         }
-
-        //-----------------
-        // draw 
-        drawCount = 0;
-        for (int i = 0; i < detectObjects.Count; i++)
-        {
-            DetectObject detect = detectObjects[i];
-
-            // noise
-            if (detect.idList.Count < noiseLimit)
-            {
-                continue;
-            }
-
-            int offsetCount = detect.idList.Count / 3;
-            int avgId = 0;
-            for (int n = 0; n < detect.idList.Count; n++)
-            {
-                avgId += detect.idList[n];
-            }
-            avgId = avgId / (detect.idList.Count);
-
-            long avgDist = 0;
-            for (int n = offsetCount; n < detect.distList.Count - offsetCount; n++)
-            {
-                avgDist += detect.distList[n];
-            }
-            avgDist = avgDist / (detect.distList.Count - offsetCount * 2);
-
-            //float a = d * avgId + offset;
-            //Vector3 dir = new Vector3(-Mathf.Cos(a), -Mathf.Sin(a), 0);
-            Vector3 dir = directions[avgId];
-            long dist = avgDist;
-
-
-            //float a0 = d * detect.idList[offsetCount] + offset;
-            //Vector3 dir0 = new Vector3(-Mathf.Cos(a0), -Mathf.Sin(a0), 0);
-            int id0 = detect.idList[offsetCount];
-            Vector3 dir0 = directions[id0];
-            long dist0 = detect.distList[offsetCount];
-
-            //float a1 = d * detect.idList[detect.idList.Count-1 - offsetCount] + offset;
-            //Vector3 dir1 = new Vector3(-Mathf.Cos(a1), -Mathf.Sin(a1), 0);
-            int id1 = detect.idList[detect.idList.Count - 1 - offsetCount];
-            Vector3 dir1 = directions[id1];
-            long dist1 = detect.distList[detect.distList.Count - 1 - offsetCount];
-
-            Color gColor;
-            if (drawCount < groupColors.Length)
-            {
-                gColor = groupColors[drawCount];
-            }
-            else
-            {
-                gColor = Color.green;
-            }
-            for (int j = offsetCount; j < detect.idList.Count - offsetCount; j++)
-            {
-                //float _a = d * detect.idList[j] + offset;
-                //Vector3 _dir = new Vector3(-Mathf.Cos(_a), -Mathf.Sin(_a), 0);
-                int _id = detect.idList[j];
-                Vector3 _dir = directions[_id];
-                long _dist = detect.distList[j];
-                Debug.DrawRay(Vector3.zero, _dist * _dir * scale, gColor);
-            }
-
-            Debug.DrawLine(dist0 * dir0 * scale, dist1 * dir1 * scale, gColor);
-            Debug.DrawRay(Vector3.zero, dist * dir * scale, Color.green);
-
-            drawCount++;
-        }
-
-        DrawRect(detectAreaRect, Color.green);
     }
     void DrawRect(Rect rect, Color color)
     {
@@ -339,9 +260,6 @@ public class Sensor : MonoBehaviour
         {
             urg.Write(SCIP_library.SCIP_Writer.QT());
         }
-
-        GUILayout.Label("distances.Count: " + distances.Count + " / strengths.Count: " + strengths.Count);
-        GUILayout.Label("drawCount: " + drawCount + " / detectObjects: " + detectObjects.Count);
     }
 
 

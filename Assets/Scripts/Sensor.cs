@@ -137,6 +137,9 @@ public class Sensor : MonoBehaviour
         distances = new List<long>();
         strengths = new List<long>();
 
+        detectObjects = new List<DetectObject>();
+
+
         urg = this.gameObject.AddComponent<UrgDeviceEthernet>();
         urg.StartTCP(ip_address, port_number);
 
@@ -183,140 +186,11 @@ public class Sensor : MonoBehaviour
 
         if (debugDraw)
         {
-            // distances
-            //			float colorD = 1.0f / 1440;
             for (int i = 0; i < distances.Count; i++)
             {
-                //float a = d * i + offset;
-                //Vector3 dir = new Vector3(-Mathf.Cos(a), -Mathf.Sin(a), 0);
                 Vector3 dir = directions[i];
                 long dist = distances[i];
-                //color = (dist < limit && dir.y > 0) ? detectColor : new Color(colorD * i, 0,0,1.0f);
-                //Color color = (dist < limit && dir.y > 0) ? detectColor : distanceColor;
-                //				Debug.DrawRay(Vector3.zero, dist * dir * scale, color);
                 Debug.DrawRay(Vector3.zero, dist * dir * scale, distanceColor);
-            }
-        }
-
-        //-----------------
-        //  group
-        detectObjects = new List<DetectObject>();
-        //
-        //------
-        //		bool endGroup = true;
-        //		for(int i = 0; i < distances.Count; i++){
-        //			int id = i;
-        //			long dist = distances[id];
-        //
-        //			float a = d * i + offset;
-        //			Vector3 dir = new Vector3(-Mathf.Cos(a), -Mathf.Sin(a), 0);
-        //
-        //			if(dist < limit && dir.y > 0){
-        //				DetectObject detect;
-        //				if(endGroup){
-        //					detect = new DetectObject();
-        //					detect.idList.Add(id);
-        //					detect.distList.Add(dist);
-        //
-        //					detect.startDist = dist;
-        //					detectObjects.Add(detect);
-        //					
-        //					endGroup = false;
-        //				}else{
-        //					detect = detectObjects[detectObjects.Count-1];
-        //					detect.idList.Add(id);
-        //					detect.distList.Add(dist);
-        //
-        //					if(dist > detect.startDist){
-        //						endGroup = true;
-        //					}
-        //				}
-        //			}else{
-        //				endGroup = true;
-        //			}
-        //		}
-
-        //------
-        //		bool endGroup = true;
-        //		for(int i = 1; i < distances.Count-1; i++){
-        //			long dist = distances[i];
-        //			float delta = Mathf.Abs((float)(distances[i] - distances[i-1]));
-        //			float delta1 = Mathf.Abs((float)(distances[i+1] - distances[i]));
-        //			
-        //			float a = d * i + offset;
-        //			Vector3 dir = new Vector3(-Mathf.Cos(a), -Mathf.Sin(a), 0);
-        //			
-        //			if(dir.y > 0){
-        //				DetectObject detect;
-        //				if(endGroup){
-        //					if(dist < limit && delta > 50){
-        //						detect = new DetectObject();
-        //						detect.idList.Add(i);
-        //						detect.distList.Add(dist);
-        //						
-        //						detect.startDist = dist;
-        //						detectObjects.Add(detect);
-        //						
-        //						endGroup = false;
-        //					}
-        //				}else{
-        //					if(delta < 50){
-        //						detect = detectObjects[detectObjects.Count-1];
-        //						detect.idList.Add(i);
-        //						detect.distList.Add(dist);
-        //					}else{
-        //						endGroup = true;
-        //					}
-        //				}
-        //			}
-        //		}
-
-
-        //------
-        bool endGroup = true;
-        float deltaLimit = 100; // 認識の閾値　連続したもののみを取得するため (mm)
-        for (int i = 1; i < distances.Count - 1; i++)
-        {
-            //float a = d * i + offset;
-            //Vector3 dir = new Vector3(-Mathf.Cos(a), -Mathf.Sin(a), 0);
-            Vector3 dir = directions[i];
-            long dist = distances[i];
-            float delta = Mathf.Abs((float)(distances[i] - distances[i - 1]));
-            float delta1 = Mathf.Abs((float)(distances[i + 1] - distances[i]));
-
-            if (dir.y > 0)
-            {
-                DetectObject detect;
-                if (endGroup)
-                {
-                    Vector3 pt = dist * dir * scale;
-                    if (dist < limit && (delta < deltaLimit && delta1 < deltaLimit))
-                    {
-                        //					bool isArea = detectAreaRect.Contains(pt);
-                        //					if(isArea && (delta < deltaLimit && delta1 < deltaLimit)){
-                        detect = new DetectObject();
-                        detect.idList.Add(i);
-                        detect.distList.Add(dist);
-
-                        detect.startDist = dist;
-                        detectObjects.Add(detect);
-
-                        endGroup = false;
-                    }
-                }
-                else
-                {
-                    if (delta1 >= deltaLimit || delta >= deltaLimit)
-                    {
-                        endGroup = true;
-                    }
-                    else
-                    {
-                        detect = detectObjects[detectObjects.Count - 1];
-                        detect.idList.Add(i);
-                        detect.distList.Add(dist);
-                    }
-                }
             }
         }
 
